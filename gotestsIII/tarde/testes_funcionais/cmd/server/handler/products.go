@@ -74,7 +74,7 @@ func (c *ProductHandler) GetAll() gin.HandlerFunc {
 // @Accept  json
 // @Produce  json
 // @Param token header string true "token"
-// @Param product body CreateRequestDto true "Product to store"
+// @Param product body CreateRequestDto true "entities.Product to store"
 // @Success 200 {object} web.Response
 // @Router /products [post]
 func (c *ProductHandler) Store() gin.HandlerFunc {

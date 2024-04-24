@@ -14,21 +14,21 @@ func NewFileRepository(db store.Store) Repository {
 	}
 }
 
-func (r *FileRepository) GetAll() ([]Product, error) {
-	var ps []Product
+func (r *FileRepository) GetAll() ([]entities.Product, error) {
+	var ps []entities.Product
 	r.db.Read(&ps)
 	return ps, nil
 }
 
-func (r *FileRepository) Store(name, category string, count int, price float64) (Product, error) {
-	p := Product{
+func (r *FileRepository) Store(name, category string, count int, price float64) (entities.Product, error) {
+	p := entities.Product{
 		Name:     name,
 		Category: category,
 		Count:    count,
 		Price:    price,
 	}
 
-	var ps []Product
+	var ps []entities.Product
 
 	// primeiro lemos o arquivo
 	r.db.Read(&ps)
@@ -44,7 +44,7 @@ func (r *FileRepository) Store(name, category string, count int, price float64) 
 	// gravamos no arquivo novamente com o novo produto inserido
 	err := r.db.Write(ps)
 	if err != nil {
-		return Product{}, err
+		return entities.Product{}, err
 	}
 	return p, nil
 }
@@ -53,15 +53,15 @@ func (r *FileRepository) Delete(id uint64) error {
 	return nil
 }
 
-func (r *FileRepository) Update(id uint64, name, productType string, count int, price float64) (Product, error) {
-	return Product{}, nil
+func (r *FileRepository) Update(id uint64, name, productType string, count int, price float64) (entities.Product, error) {
+	return entities.Product{}, nil
 }
-func (r *FileRepository) UpdateName(id uint64, name string) (Product, error) {
-	return Product{}, nil
+func (r *FileRepository) UpdateName(id uint64, name string) (entities.Product, error) {
+	return entities.Product{}, nil
 }
 
 func (r *FileRepository) LastID() (uint64, error) {
-	var ps []Product
+	var ps []entities.Product
 	if err := r.db.Read(&ps); err != nil {
 		return 0, err
 	}

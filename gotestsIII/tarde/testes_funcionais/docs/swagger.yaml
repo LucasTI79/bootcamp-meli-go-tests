@@ -55,7 +55,7 @@ paths:
         name: token
         required: true
         type: string
-      - description: Product to store
+      - description: entities.Product to store
         in: body
         name: product
         required: true

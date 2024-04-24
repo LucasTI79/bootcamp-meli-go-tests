@@ -8,10 +8,10 @@ var (
 )
 
 type Service interface {
-	GetAll() ([]Product, error)
-	Store(name, category string, count int, price float64) (Product, error)
-	Update(id uint64, name, category string, count int, price float64) (Product, error)
-	UpdateName(id uint64, name string) (Product, error)
+	GetAll() ([]entities.Product, error)
+	Store(name, category string, count int, price float64) (entities.Product, error)
+	Update(id uint64, name, category string, count int, price float64) (entities.Product, error)
+	UpdateName(id uint64, name string) (entities.Product, error)
 	Delete(id uint64) error
 }
 
@@ -19,7 +19,7 @@ type service struct {
 	repository Repository
 }
 
-func (s *service) GetAll() ([]Product, error) {
+func (s *service) GetAll() ([]entities.Product, error) {
 	produtos, err := s.repository.GetAll()
 	if err != nil {
 		return nil, err
@@ -29,28 +29,28 @@ func (s *service) GetAll() ([]Product, error) {
 
 }
 
-func (s *service) Store(name, category string, count int, price float64) (Product, error) {
+func (s *service) Store(name, category string, count int, price float64) (entities.Product, error) {
 	// aqui poderiamos também através da service enviar o id ao repositório caso quisessemos
 	// lastID, err := s.repository.LastID()
 	// if err != nil {
-	// 	return Product{}, err
+	// 	return entities.Product{}, err
 	// }
 
 	// lastID++
 
 	product, err := s.repository.Store(name, category, count, price)
 	if err != nil {
-		return Product{}, err
+		return entities.Product{}, err
 	}
 
 	return product, nil
 }
 
-func (s *service) Update(id uint64, name, category string, count int, price float64) (Product, error) {
+func (s *service) Update(id uint64, name, category string, count int, price float64) (entities.Product, error) {
 	return s.repository.Update(id, name, category, count, price)
 }
 
-func (s *service) UpdateName(id uint64, name string) (Product, error) {
+func (s *service) UpdateName(id uint64, name string) (entities.Product, error) {
 	return s.repository.UpdateName(id, name)
 }
 

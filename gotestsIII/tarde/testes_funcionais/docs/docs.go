@@ -75,7 +75,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Product to store",
+                        "description": "entities.Product to store",
                         "name": "product",
                         "in": "body",
                         "required": true,
