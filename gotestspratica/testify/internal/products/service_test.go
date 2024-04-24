@@ -13,6 +13,28 @@ import (
 
 func TestGetAllBySeller(t *testing.T) {
 	var emptyProducts []entities.Product
+
+	t.Run("deve retornar o erro caso ocorra um erro na chamada da repository", func(t *testing.T) {
+		expectedErrorMessage := "erro qualquer"
+		mockError := errors.New("erro qualquer")
+
+		service, repoMock := createService(t)
+
+		repoMock.Mock.On(
+			"GetAllBySellerId",
+			mock.AnythingOfType("string"),
+		).Return(
+			emptyProducts,
+			mockError,
+		)
+
+		_, err := service.GetAllBySellerId("123")
+
+		repoMock.Mock.AssertCalled(t, "GetAllBySellerId", "123")
+		assert.NotNil(t, err)
+		assert.Equal(t, expectedErrorMessage, err.Error())
+	})
+
 	t.Run("deve retornar os sellers ao chamar a repository", func(t *testing.T) {
 		mockProducts := []entities.Product{
 			{
@@ -36,27 +58,6 @@ func TestGetAllBySeller(t *testing.T) {
 		result, err := service.GetAllBySellerId("123")
 		assert.Nil(t, err)
 		assert.True(t, len(result) > 0)
-	})
-
-	t.Run("Deve retornar o erro caso ocorra um erro na chamada da repository", func(t *testing.T) {
-		expectedErrorMessage := "erro qualquer"
-		mockError := errors.New("erro qualquer")
-
-		service, repoMock := createService(t)
-
-		repoMock.Mock.On(
-			"GetAllBySellerId",
-			mock.AnythingOfType("string"),
-		).Return(
-			emptyProducts,
-			mockError,
-		)
-
-		_, err := service.GetAllBySellerId("123")
-
-		repoMock.Mock.AssertCalled(t, "GetAllBySellerId", "123")
-		assert.NotNil(t, err)
-		assert.Equal(t, expectedErrorMessage, err.Error())
 	})
 }
 

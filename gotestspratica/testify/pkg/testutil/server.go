@@ -28,7 +28,7 @@ func MakeRequest(
 
 	req := httptest.NewRequest(method, url, bytes.NewBuffer([]byte(body)))
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("TOKEN", "123456")
+	req.Header.Add("api_token", "123456")
 
 	return req, httptest.NewRecorder()
 

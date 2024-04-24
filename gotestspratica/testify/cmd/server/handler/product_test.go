@@ -14,6 +14,7 @@ import (
 	mocks "github.com/batatinha123/bootcamp-meli-tests-pratica/tests/products"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestGetAll(t *testing.T) {
@@ -41,7 +42,6 @@ func TestGetAll(t *testing.T) {
 
 		err := json.Unmarshal(response.Body.Bytes(), &resp)
 		assert.Nil(t, err)
-
 		assert.Equal(t, http.StatusNotFound, response.Code)
 	})
 	t.Run("deve retornar status code 204 se o seller não tiver produtos", func(t *testing.T) {
@@ -52,7 +52,6 @@ func TestGetAll(t *testing.T) {
 		DefineQueryParamSellerId(t, request)
 
 		server.ServeHTTP(response, request)
-
 		assert.Equal(t, http.StatusNoContent, response.Code)
 	})
 	t.Run("deve retornar status code 500, caso o método GetAllBySeller da repository retorne um erro", func(t *testing.T) {
@@ -67,7 +66,39 @@ func TestGetAll(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, response.Code)
 	})
 	t.Run("deve retornar status code 200, com os produtos como resposta", func(t *testing.T) {
-		t.Skip()
+		var result web.Response
+		var data []entities.Product
+		mockedProductsList := []entities.Product{
+			{
+				ID:       "123",
+				Name:     "Product 1",
+				Price:    10.0,
+				SellerId: "123",
+			},
+		}
+
+		server, service := InitServerWithGetProductsRoute(t)
+		service.On(
+			"GetAllBySellerId",
+			mock.AnythingOfType("string"),
+		).Return(
+			mockedProductsList,
+			nil,
+		)
+
+		request, response := testutil.MakeRequest(http.MethodGet, GetAllProductsBySellerId, "")
+		DefineQueryParamSellerId(t, request)
+
+		server.ServeHTTP(response, request)
+
+		assert.Equal(t, http.StatusOK, response.Code)
+		err := json.Unmarshal(response.Body.Bytes(), &result)
+		assert.Nil(t, err)
+		jsonData, err := json.Marshal(result.Data)
+		assert.Nil(t, err)
+		err = json.Unmarshal(jsonData, &data)
+		assert.Nil(t, err)
+		assert.Equal(t, mockedProductsList, data)
 	})
 }
 
