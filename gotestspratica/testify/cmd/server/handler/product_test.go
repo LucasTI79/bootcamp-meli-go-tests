@@ -66,7 +66,6 @@ func TestGetAll(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, response.Code)
 	})
 	t.Run("deve retornar status code 200, com os produtos como resposta", func(t *testing.T) {
-		var result web.Response
 		var data []entities.Product
 		mockedProductsList := []entities.Product{
 			{
@@ -91,13 +90,10 @@ func TestGetAll(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
+		err := ParseBody(t, response.Body.Bytes(), &data)
+		assert.Nil(t, err)
+
 		assert.Equal(t, http.StatusOK, response.Code)
-		err := json.Unmarshal(response.Body.Bytes(), &result)
-		assert.Nil(t, err)
-		jsonData, err := json.Marshal(result.Data)
-		assert.Nil(t, err)
-		err = json.Unmarshal(jsonData, &data)
-		assert.Nil(t, err)
 		assert.Equal(t, mockedProductsList, data)
 	})
 }
@@ -125,4 +121,35 @@ func DefineQueryParamSellerId(t *testing.T, request *http.Request) {
 	// A função encode deixa os query params que foram definidos, no formato que o navegador entenda
 	request.URL.RawQuery = query.Encode()
 	// /api/v1/products?seller_id=123
+}
+
+func ParseBody(t *testing.T, body []byte, data interface{}) error {
+	t.Helper()
+	var response web.Response
+	responseJsonData, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(responseJsonData, &response)
+	if err != nil {
+		return err
+	}
+	dataJson, err := json.Marshal(response.Data)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(dataJson, data)
+}
+
+func ParseError(t *testing.T, body []byte) error {
+	t.Helper()
+	var response web.Response
+	err := json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
+	if response.Error != "" {
+		return errors.New(response.Error)
+	}
+	return nil
 }
