@@ -1,6 +1,6 @@
 package products
 
-type entities.Product struct {
+type Product struct {
 	ID       uint64  `json:"id"`
 	Name     string  `json:"name"`
 	Category string  `json:"category"`

@@ -4,19 +4,19 @@ import (
 	"fmt"
 )
 
-var ps []entities.Product
+var ps []Product
 var lastID uint64 = 0
 
 type MemoryRepository struct {
 }
 
-func (m *MemoryRepository) GetAll() ([]entities.Product, error) {
+func (m *MemoryRepository) GetAll() ([]Product, error) {
 	return ps, nil
 }
 
-func (m *MemoryRepository) Store(name, category string, count int, price float64) (entities.Product, error) {
+func (m *MemoryRepository) Store(name, category string, count int, price float64) (Product, error) {
 	lastID++
-	p := entities.Product{
+	p := Product{
 		ID:       lastID,
 		Name:     name,
 		Category: category,
@@ -27,8 +27,8 @@ func (m *MemoryRepository) Store(name, category string, count int, price float64
 	return p, nil
 }
 
-func (m *MemoryRepository) Update(id uint64, name, category string, count int, price float64) (entities.Product, error) {
-	p := entities.Product{
+func (m *MemoryRepository) Update(id uint64, name, category string, count int, price float64) (Product, error) {
+	p := Product{
 		Name:     name,
 		Category: category,
 		Count:    count,
@@ -43,13 +43,13 @@ func (m *MemoryRepository) Update(id uint64, name, category string, count int, p
 		}
 	}
 	if !updated {
-		return entities.Product{}, fmt.Errorf("product %d not found", id)
+		return Product{}, fmt.Errorf("product %d not found", id)
 	}
 	return p, nil
 }
 
-func (m *MemoryRepository) UpdateName(id uint64, name string) (entities.Product, error) {
-	var p entities.Product
+func (m *MemoryRepository) UpdateName(id uint64, name string) (Product, error) {
+	var p Product
 	updated := false
 	for i := range ps {
 		if ps[i].ID == id {
@@ -59,7 +59,7 @@ func (m *MemoryRepository) UpdateName(id uint64, name string) (entities.Product,
 		}
 	}
 	if !updated {
-		return entities.Product{}, fmt.Errorf("product %d not found", id)
+		return Product{}, fmt.Errorf("product %d not found", id)
 	}
 
 	return p, nil

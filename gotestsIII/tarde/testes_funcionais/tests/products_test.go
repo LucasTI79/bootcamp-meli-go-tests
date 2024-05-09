@@ -52,7 +52,7 @@ func Test_GetProduct(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rr.Code)
 		err := json.Unmarshal(rr.Body.Bytes(), &response)
 		assert.Nil(t, err)
-		var data []products.entities.Product
+		var data []products.Product
 		jsonData, err := json.Marshal(response.Data)
 		assert.Nil(t, err)
 		err = json.Unmarshal(jsonData, &data)
